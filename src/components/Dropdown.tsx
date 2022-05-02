@@ -1,4 +1,4 @@
-import {faArrowDown} from '@fortawesome/free-solid-svg-icons';
+import {faArrowsUpDown} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import React, {FC, ReactElement, useRef, useState} from 'react';
 import {
@@ -27,6 +27,8 @@ const Dropdown: FC<Props> = ({label, data, styles}) => {
   const [text, onChangeText] = React.useState('');
   const [list, setList] = useState(data);
 
+  const defaultStyles = tw``;
+
 
   const toggleDropdown = (): void => {
     visible ? setVisible(false) : openDropdown();
@@ -42,7 +44,7 @@ const Dropdown: FC<Props> = ({label, data, styles}) => {
         _px: number,
         py: number,
       ) => {
-        setDropdownTop(py + h);
+        setDropdownTop(py);
       },
     );
     setVisible(true);
@@ -56,10 +58,10 @@ const Dropdown: FC<Props> = ({label, data, styles}) => {
   const renderItem = ({item}: any): ReactElement<any, any> => (
     <TouchableOpacity
       accessible={true}
-      style={tw`px-[10] py-[10] border-b`}
+      style={tw`px-[10] py-[10]`}
       onPress={() => onItemPress(item)}
       accessibilityLabel={item.label}>
-      <Text style={tw`font-bold`}>{item.label}</Text>
+      <Text style={tw`font-semibold`}>{item.label}</Text>
     </TouchableOpacity>
   );
 
@@ -77,23 +79,17 @@ const Dropdown: FC<Props> = ({label, data, styles}) => {
         visible={visible}
         transparent
         animationType="none"
-        style={tw`h-full`}>
-        <TouchableOpacity
-          onPress={() => setVisible(false)}>
-          <View style={[tw`w-[80%] bg-white w-full shadow-black items-center`, {top: dropdownTop}]}>
-            <TextInput
-              accessible={true}
-              style={tw`w-[80%] border-gray-300 border-2 h-12 rounded-md`}
-              onChangeText={onFilter}
-              placeholder="Search..."
-              autoCapitalize="none"
-              value={text}
-              accessibilityLabel="Search!"
-              accessibilityHint="Type for search countries"
-              accessibilityRole="search"
-            />
+        style={tw`h-full`}
+      >
+        <TouchableOpacity onPress={() => setVisible(false)}>
+          <View
+            style={[
+              tw`w-[100%] bg-white w-full shadow-black items-center`,
+              { top: dropdownTop },
+            ]}
+          >
             <FlatList
-              style={tw`w-[80%] border-gray-300 border-2 h-100 rounded-md`}
+              style={tw`w-[100%] border-2 h-100 rounded-md`}
               data={list}
               renderItem={renderItem}
               keyExtractor={(item, index) => index.toString()}
@@ -106,20 +102,30 @@ const Dropdown: FC<Props> = ({label, data, styles}) => {
   };
 
   return (
-    <TouchableOpacity
-      ref={DropdownButton}
-      style={tw`flex-row justify-between items-center bg-white`}
-      accessible={true}
-      accessibilityLabel="Click to open!"
-      accessibilityHint="Open the options"
-      onPress={toggleDropdown}
-      accessibilityRole="combobox">
-      {renderDropdown()}
-      <Text style={tw`text-sm font-medium text-gray-700`}>      
-        {(!!selected && selected.label) || label}
-      </Text>
-      <FontAwesomeIcon icon={faArrowDown} />
-    </TouchableOpacity>
+    <View style={tw`flex-row justify-between border-2 p-2 rounded-md`}>
+      {/* <FontAwesomeIcon icon={faArrowDown} /> */}
+      <TextInput
+        accessible={true}
+        style={tw`rounded-md`}
+        onChangeText={onFilter}
+        placeholder="Search..."
+        autoCapitalize="none"
+        value={selected}
+        accessibilityLabel="Search!"
+        accessibilityHint="Type for search countries"
+        accessibilityRole="search"
+      />
+      <TouchableOpacity
+        ref={DropdownButton}
+        accessible={true}
+        accessibilityLabel="Click to open!"
+        accessibilityHint="Open the options"
+        onPress={toggleDropdown}
+        accessibilityRole="combobox">
+        {renderDropdown()}
+        <FontAwesomeIcon style={tw`py-3 border-indigo-600`} icon={faArrowsUpDown} />
+      </TouchableOpacity>
+    </View>
   );
 };
 export default Dropdown;
