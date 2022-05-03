@@ -1,4 +1,4 @@
-import {faArrowsUpDown, faCheck} from '@fortawesome/free-solid-svg-icons';
+import {faSort, faCheck} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import React, {FC, ReactElement, useRef, useState} from 'react';
 import {
@@ -34,58 +34,29 @@ const Dropdown: FC<Props> = ({label, data, styles}) => {
   const onFilter = (query: string) => {
     setQuery(query);
     data = data.filter(value => {
-      return value.label.toLowerCase().indexOf(query.toLowerCase()) > -1;
+      return value.label.toLowerCase().indexOf(query.toLowerCase()) != -1;
     });
     setList(data);
     openDropdown();
   };
 
-  // const toggleDropdown = (): void => {
-  //   visible ? setVisible(false) : openDropdown();
-  // };
+  const toggleDropdown = (): void => {
+    visible ? setVisible(false) : openDropdown();
+  };
 
   const openDropdown = (): void => {
-    DropdownButton.current.measure(
-      (
-        _fx: number,
-        _fy: number,
-        _w: number,
-        h: number,
-        _px: number,
-        py: number,
-      ) => {
-        setDropdownTop(py + h * 2);
-      },
-    );
     setVisible(true);
   };
 
   const renderDropdown = (): ReactElement<any, any> => {
     return (
-      <Modal
-        visible={visible}
-        transparent
-        animationType="none"
-        style={tw`h-full w-5`}
-        onShow={() => SearchInput.current.focus()}
-      >
-        <TouchableOpacity onPress={() => setVisible(false)}>
-          <View
-            style={[
-              tw`w-[100%] bg-white w-full items-center`,
-              { top: dropdownTop },
-            ]}
-          >
-            <FlatList
-              style={tw`w-[100%] border border-indigo-600 h-100 rounded-md`}
-              data={list}
-              renderItem={renderItem}
-              keyExtractor={(item, index) => index.toString()}
-              nestedScrollEnabled
-            />
-          </View>
-        </TouchableOpacity>
-      </Modal>
+      <FlatList
+        style={tw`w-full z-10 max-h-60 h-10 border border-indigo-600 h-100 rounded-md`}
+        data={list}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => index.toString()}
+        nestedScrollEnabled
+      />
     );
   };
 
@@ -110,31 +81,30 @@ const Dropdown: FC<Props> = ({label, data, styles}) => {
 
   return (
     <>
-      <Text accessible={true} accessibilityLabel={label} style={tw`text-sm font-medium text-gray-700`}>{label}</Text>
-      <View style={tw.style(`flex-row justify-between border-2 border-gray-500 p-2 rounded-md`, visible && `border border-indigo-600`)}
-            onTouchStart={openDropdown}
+      <Text accessible={true} accessibilityLabel={label} style={tw`text-base text-gray-700`}>{label}</Text>
+      <View style={tw.style(`flex-row justify-between border-2 border-gray-500 p-2 rounded-md relative mt-1`, visible && `border border-indigo-600`)}
+            onTouchStart={toggleDropdown}
       >
-        <TextInput
+<       TextInput
           ref={SearchInput}
           accessible={true}
           accessibilityHint="Type for search countries"
           accessibilityRole="search"
           placeholder="Search..."
           autoCapitalize="none"
-          style={tw`rounded-md`}
+          style={tw`text-base rounded-md w-3/4`}
           onChangeText={onFilter}
           value={query}
         />
         <TouchableOpacity
-          ref={DropdownButton}
           accessible={true}
           accessibilityHint="Open combobox's options"
           accessibilityRole="combobox"
         >
-          {renderDropdown()}
-          <FontAwesomeIcon color='#adb5bd' style={tw`py-3`} icon={faArrowsUpDown} />
+          <FontAwesomeIcon color='#adb5bd' style={tw`py-3`} icon={faSort} />
         </TouchableOpacity>
       </View>
+      {visible && renderDropdown()}
     </>
   );
 };

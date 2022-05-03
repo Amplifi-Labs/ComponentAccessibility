@@ -6,7 +6,7 @@ import React from 'react';
 
 const App = () => {
   return (
-    <SafeAreaView style={tw`w-100%`}>  
+    <SafeAreaView style={tw`w-100% p-10`}>  
       <Dropdown label="Countries" data={countries} />
     </SafeAreaView>
   );
