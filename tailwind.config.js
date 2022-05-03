@@ -40,6 +40,7 @@ module.exports = {
         'baby-blue': '#CCEFFC',
         'indigo-600': '#3949AB',
         'gray-300': '#e2e8f0',
+        'gray-500': '#adb5bd',
         'gray-700': '#4a5568',
       },
       extend: {
